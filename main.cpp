@@ -19,6 +19,10 @@
 #include "lex.h"
 #include "tokens.h"
 
+// Uncomment the following line after integrating your symbol table with
+// your scanner.
+#define TEST2
+
 cSymbolTable g_symbolTable;
 long long cSymbol::nextId = 0;
 yylval_t yylval;
@@ -34,8 +38,9 @@ int main(int argc, char **argv)
     const char *outfile_name;
     int result = 0;
     int token;
+    int do_test2 = 0;
 
-    std::cout << "Philip Howard" << std::endl;
+    std::cout << "Matt Elfbrandt" << std::endl;
 
     // open input
     if (argc > 1)
@@ -66,7 +71,38 @@ int main(int argc, char **argv)
         }
     }
 
-    std::cout << "<program>\n";
+        if (argc > 3) do_test2 = 1;
+
+    token = yylex();
+    while (token != 0)
+    {
+        // Handle scope changes for { and }
+        if (token == '{')
+        {
+            g_symbolTable.IncreaseScope();
+        }
+        else if (token == '}')
+        {
+            g_symbolTable.DecreaseScope();
+        }
+
+    #ifdef TEST2
+        if (do_test2 && token == IDENTIFIER)
+            printf("%d:%s:%lld\n", token, yytext, yylval.symbol->GetId());
+        else
+            printf("%d:%s\n", token, yytext);
+    #else
+        if (do_test2)
+        {
+            fprintf(stderr, "Not compiled with TEST2 defined\n");
+            return 0;
+        }
+        else
+            printf("%d:%s\n", token, yytext);
+    #endif
+
+        token = yylex();
+    }
 
     token = yylex();
     while (token != 0)
@@ -121,8 +157,5 @@ int main(int argc, char **argv)
         }
         token = yylex();
     }
-
-    std::cout << "</program>\n";
-
     return result;
 }

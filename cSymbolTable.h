@@ -3,9 +3,15 @@
 // You are not required to use any of these names, but you will need the 
 // described functionality
 //
+#include <string>
+#include <map>
+#include "cSymbol.h"
 
-// NOTE: The following typedef will have to be replaced by something meaningful
-typedef void symbolTable_t;
+using std::string;
+using std::map;
+
+// Symbol table type
+typedef map<string, cSymbol*> symbolTable_t;
 
 class cSymbolTable
 {
