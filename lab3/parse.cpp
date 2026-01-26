@@ -42,13 +42,24 @@ bool FindSTMTS()
     }
 
     // Try to find a statement
-    if (FindSTMT())
+    if (!FindSTMT())
     {
-        // Recursively find more statements
-        return FindSTMTS();
+        // Error recovery: skip tokens until we find a semicolon or EOF
+        while (token != 0 && token != ';')
+        {
+            AdvanceToken();
+            token = PeekToken();
+        }
+        
+        // If we found a semicolon, skip it and continue
+        if (token == ';')
+        {
+            AdvanceToken();
+        }
     }
-
-    return true;
+    
+    // Recursively find more statements
+    return FindSTMTS();
 }
 
 //*******************************************
