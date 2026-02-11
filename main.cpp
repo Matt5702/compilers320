@@ -14,21 +14,15 @@
 #include <unistd.h>
 #include <iostream>
 #include <fstream>
-#include "cSymbol.h"
-#include "cSymbolTable.h"
+
 #include "lex.h"
-#include "tokens.h"
+#include "astnodes.h"
+#include "langparse.h"
+#include "cSymbolTable.h"
 
 // Uncomment the following line after integrating your symbol table with
 // your scanner.
-#define TEST2
-
-cSymbolTable g_symbolTable;
-long long cSymbol::nextId = 0;
-yylval_t yylval;
-int g_insert = 1;           // global to indicate that symbols should be 
-                            // inserted into the symbol table
-int g_local = 0;            // global to indicate to do local lookups
+long long cSymbol::nextId;
 
 // **************************************************
 // argv[1] is the input file
@@ -37,10 +31,19 @@ int main(int argc, char **argv)
 {
     const char *outfile_name;
     int result = 0;
-    int token;
-    int do_test2 = 0;
 
-    std::cout << "Matt Elfbrandt" << std::endl;
+    // Preload built-in types to stabilize symbol IDs
+    const char *builtins[] = {"char", "int", "float", "long", "double"};
+    for (const char *name : builtins)
+    {
+        cSymbol *sym = g_symbolTable.Find(name);
+        if (sym == nullptr)
+        {
+            sym = new cSymbol(name);
+            sym->SetIsType(true);
+            g_symbolTable.Insert(sym);
+        }
+    }
 
     // open input
     if (argc > 1)
@@ -71,91 +74,22 @@ int main(int argc, char **argv)
         }
     }
 
-        if (argc > 3) do_test2 = 1;
-
-    token = yylex();
-    while (token != 0)
+    result = yyparse();
+    if (yyast_root != nullptr)
     {
-        // Handle scope changes for { and }
-        if (token == '{')
+        if (result == 0)
         {
-            g_symbolTable.IncreaseScope();
+            std::cout << "<?xml version=\"1.0\"?>\n";
+            std::cout << yyast_root->ToString();
+        } else {
+            std::cout << " Errors in compile\n";
         }
-        else if (token == '}')
-        {
-            g_symbolTable.DecreaseScope();
-        }
-
-    #ifdef TEST2
-        if (do_test2 && token == IDENTIFIER)
-            printf("%d:%s:%lld\n", token, yytext, yylval.symbol->GetId());
-        else
-            printf("%d:%s\n", token, yytext);
-    #else
-        if (do_test2)
-        {
-            fprintf(stderr, "Not compiled with TEST2 defined\n");
-            return 0;
-        }
-        else
-            printf("%d:%s\n", token, yytext);
-    #endif
-
-        token = yylex();
     }
 
-    token = yylex();
-    while (token != 0)
+    if (result == 0 && yylex() != 0)
     {
-        // if we found an identifier, print it out
-        if (token == IDENTIFIER) 
-        {
-            cSymbol *sym;
-            if (!g_insert)
-            {
-                if (g_local)
-                    sym = g_symbolTable.FindLocal(yylval.symbol->GetName());
-                else
-                    sym = g_symbolTable.Find(yylval.symbol->GetName());
-
-                if (sym != nullptr) yylval.symbol = sym;
-            }
-
-            // this will either be the one found above or the one created
-            // in the scanner.
-            std::cout << yylval.symbol->ToString() << "\n";
-        }
-        else if (token == LOCAL)
-        {
-            std::cout << "<local />\n";
-            g_local = 1;
-        }
-        else if (token == GLOBAL)
-        {
-            std::cout << "<global />\n";
-            g_local = 0;
-        }
-        else if (token == LOOKUP)
-        {
-            std::cout << "<lookup />\n";
-            g_insert = 0;
-        }
-        else if (token == INSERT)
-        {
-            std::cout << "<insert />\n";
-            g_insert = 1;
-        }
-        else if (token == OPEN)
-        {
-            std::cout << "<open />\n";
-            g_symbolTable.IncreaseScope();
-        }
-        else if (token == CLOSE)
-        {
-            std::cout << "<close />\n";
-            g_symbolTable.DecreaseScope();
-        }
-        token = yylex();
+        std::cout << "Junk at end of program\n";
     }
+
     return result;
 }

@@ -10,10 +10,13 @@
 // Illustration showing how to use {} to control scope
 // NOTE: this is pseudo-code illustrating how you can adapt your current lang.l
 
+#include <cstdlib>
+#include <string>
+
 #include "cSymbol.h"
 #include "cSymbolTable.h"
 #include "lex.h"
-#include "tokens.h"
+#include "langparse.h"
 
 // Macros that can be used to create debug output from the scanner
 // Uncomment the next line of code to generate debug output.
@@ -29,6 +32,8 @@
 int Return(int val);
 
 static int ProcessID();
+static int ProcessType();
+static std::string UnquoteString(const char *text);
 %}
 
 %option noyywrap
@@ -51,11 +56,11 @@ else                      DO_RETURN(ELSE);
 endif                     DO_RETURN(ENDIF);
 while                     DO_RETURN(WHILE);
 print                     DO_RETURN(PRINT);
-char                      DO_RETURN(CHAR);
-int                       DO_RETURN(INT);
-long                      DO_RETURN(LONG);
-float                     DO_RETURN(FLOAT);
-double                    DO_RETURN(DOUBLE);
+char                      return ProcessType();
+int                       return ProcessType();
+long                      return ProcessType();
+float                     return ProcessType();
+double                    return ProcessType();
 struct                    DO_RETURN(STRUCT);
 array                     DO_RETURN(ARRAY);
 return                    DO_RETURN(RETURN);
@@ -70,9 +75,9 @@ prints                    DO_RETURN(PRINTS);
 "<="                      DO_RETURN(LE);
 
     /* Literals */
-[0-9]+                    DO_RETURN(INT_VAL);
-[0-9]+\.[0-9]+            DO_RETURN(FLOAT_VAL);
-\"([^\\\"]|\\.)*\"        DO_RETURN(STRING_LIT);
+[0-9]+                    { yylval.int_val = atoi(yytext); DO_RETURN(INT_VAL); }
+[0-9]+\.[0-9]+            { yylval.float_val = strtod(yytext, nullptr); DO_RETURN(FLOAT_VAL); }
+\"([^\\\"]|\\.)*\"        { yylval.str_val = new std::string(UnquoteString(yytext)); DO_RETURN(STRING_LIT); }
 
     /* Single character tokens */
 "."                       DO_RETURN('.');
@@ -93,14 +98,6 @@ prints                    DO_RETURN(PRINTS);
 ">"                       DO_RETURN('>');
 "<"                       DO_RETURN('<');
 
-    /* Special testing directives (these are uppercase keywords) */
-OPEN                      DO_RETURN(OPEN);
-CLOSE                     DO_RETURN(CLOSE);
-LOCAL                     DO_RETURN(LOCAL);
-GLOBAL                    DO_RETURN(GLOBAL);
-LOOKUP                    DO_RETURN(LOOKUP);
-INSERT                    DO_RETURN(INSERT);
-
     /* Identifiers - must come after keywords */
 [a-zA-Z_][a-zA-Z0-9_]*    { return ProcessID(); }
 
@@ -116,7 +113,7 @@ INSERT                    DO_RETURN(INSERT);
 // ProcessID: create symbols in symbol table
 static int ProcessID()
 {
-    string name(yytext);
+    std::string name(yytext);
     cSymbol *sym;
 
     if (g_insert)
@@ -130,11 +127,47 @@ static int ProcessID()
     }
     else
     {
-        sym = new cSymbol(name);
+        if (g_local)
+            sym = g_symbolTable.FindLocal(name);
+        else
+            sym = g_symbolTable.Find(name);
+
+        if (sym == nullptr)
+            sym = new cSymbol(name);
     }
     yylval.symbol = sym;
 
+    if (sym->IsType())
+        return TYPE_ID;
     return IDENTIFIER;
+}
+
+// Create or reuse a symbol for built-in types
+static int ProcessType()
+{
+    std::string name(yytext);
+    cSymbol *sym = g_symbolTable.Find(name);
+
+    if (sym == nullptr)
+    {
+        sym = new cSymbol(name);
+        sym->SetIsType(true);
+        g_symbolTable.Insert(sym);
+    }
+
+    yylval.symbol = sym;
+    return TYPE_ID;
+}
+
+static std::string UnquoteString(const char *text)
+{
+    std::string raw(text);
+    if (raw.size() >= 2 && raw.front() == '"' && raw.back() == '"')
+    {
+        return raw.substr(1, raw.size() - 2);
+    }
+
+    return raw;
 }
 
 // This function allows us to do extra processing on each token

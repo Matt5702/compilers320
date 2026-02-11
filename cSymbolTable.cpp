@@ -9,6 +9,13 @@ using std::vector;
 // Internal structure to hold the nested scopes
 static vector<symbolTable_t*> g_scopes;
 
+// Global symbol table instance
+cSymbolTable g_symbolTable;
+
+// Lexer control globals
+int g_insert = 0;
+int g_local = 0;
+
 // Constructor
 cSymbolTable::cSymbolTable()
 {

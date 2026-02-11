@@ -8,34 +8,39 @@
 
 using std::string;
 
-class cSymbol
+#include "cAstNode.h"
+
+class cSymbol : public cAstNode
 {
     public:
         // Construct a symbol given its name
-        cSymbol(string name)
+        cSymbol(string name) : cAstNode()
         {
             m_id = ++nextId;
             m_name = name;
+            m_isType = false;
         }
 
         // Return a string representation of a symbol
         // Return value is an XML node
-        string ToString()
+        virtual string AttributesToString()
         {
-            string result("<sym id=\"");
+            string result(" id=\"");
             result += std::to_string(m_id);
-            result += "\" name=\"" + m_name + "\" />";
-
+            result += "\" name=\"" + m_name + "\"";
             return result;
         }
 
-        // Return name of symbol
-        string GetName() { return m_name; }
+        virtual string NodeType() { return string("sym"); }
+        virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+
+        string GetName() const { return m_name; }
+        bool IsType() const { return m_isType; }
+        void SetIsType(bool isType) { m_isType = isType; }
         
-        // Return ID of symbol
-        long long GetId() { return m_id; }
     protected:
         static long long nextId;    // keeps track of unique symbol IDs
         long long m_id;             // Unique ID for this symbol
         string m_name;              // Symbol name
+        bool m_isType;              // True when symbol is a type name
 };
