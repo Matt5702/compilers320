@@ -52,4 +52,5 @@ class cSemantics : public cVisitor
     private:
         // Helper methods for semantic checking
         bool IsTypeCompatible(cDeclNode *type1, cDeclNode *type2);
+        string GetTypeName(cDeclNode *type);
 };

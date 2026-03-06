@@ -23,6 +23,7 @@ class cArrayDeclNode : public cDeclNode
 
         virtual string NodeType() { return string("array_decl"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+        virtual string GetName() { return m_type != nullptr ? m_type->GetName() : ""; }
         virtual string AttributesToString()
         {
             return " count=\"" + std::to_string(m_count) + "\"";

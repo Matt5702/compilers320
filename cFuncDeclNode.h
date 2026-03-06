@@ -22,6 +22,9 @@ class cFuncDeclNode : public cDeclNode
             AddChild(type);
             AddChild(name);
             m_type = type;
+            m_name = name;
+            m_args = args;
+            m_isDefined = false;
             if (args != nullptr)
                 AddChild(args);
         }
@@ -29,7 +32,10 @@ class cFuncDeclNode : public cDeclNode
         void AppendArgs(cArgsNode *args)
         {
             if (args != nullptr)
+            {
                 AddChild(args);
+                m_args = args;
+            }
         }
 
         void AppendDecls(cDeclsNode *decls)
@@ -41,7 +47,10 @@ class cFuncDeclNode : public cDeclNode
         void AppendStmts(cStmtsNode *stmts)
         {
             if (stmts != nullptr)
+            {
                 AddChild(stmts);
+                m_isDefined = true;
+            }
         }
 
         virtual string NodeType() { return string("func"); }
@@ -49,6 +58,7 @@ class cFuncDeclNode : public cDeclNode
         
         // Functions are funcs
         virtual bool IsFunc() { return true; }
+        virtual string GetName() { return m_name != nullptr ? m_name->GetName() : ""; }
         
         // Return the return type of this function
         virtual cDeclNode *GetType()
@@ -58,8 +68,15 @@ class cFuncDeclNode : public cDeclNode
             
             return nullptr;
         }
+
+        cArgsNode *GetArgs() { return m_args; }
+        bool IsFullyDefined() { return m_isDefined; }
+        cSymbol *GetSymbol() { return m_name; }
         
     private:
         cSymbol *m_type;    // The return type of this function
+        cSymbol *m_name;    // The function name
+        cArgsNode *m_args;  // Formal arguments
+        bool m_isDefined;   // True if function has body
 };
 

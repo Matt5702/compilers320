@@ -25,6 +25,7 @@ class cVarDeclNode : public cDeclNode
         
         // Variables are vars
         virtual bool IsVar() { return true; }
+        virtual string GetName() { return m_type != nullptr ? m_type->GetName() : ""; }
         
         // Return the type this variable declares
         virtual cDeclNode *GetType()
@@ -32,6 +33,14 @@ class cVarDeclNode : public cDeclNode
             if (m_type != nullptr && m_type->GetDecl() != nullptr)
                 return m_type->GetDecl()->GetType();
             
+            return nullptr;
+        }
+
+        cDeclNode *GetDeclaredTypeDecl()
+        {
+            if (m_type != nullptr)
+                return m_type->GetDecl();
+
             return nullptr;
         }
         

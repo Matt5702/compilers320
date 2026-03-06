@@ -97,6 +97,9 @@
 %type <params_node> params
 %type <expr_node> param
 %type <expr_node> expr
+%type <expr_node> andexpr
+%type <expr_node> eqexpr
+%type <expr_node> relexpr
 %type <expr_node> addit
 %type <expr_node> term
 %type <expr_node> fact
@@ -141,7 +144,12 @@ decl:       TYPE_ID { g_insert = 1; } IDENTIFIER { g_insert = 0; g_declType = $1
                                 { $$ = nullptr; }
 
 var_decl:   TYPE_ID { g_insert = 1; } IDENTIFIER
-                                    { g_insert = 0; $$ = new cVarDeclNode($1, $3); }
+                                    {
+                                        g_insert = 0;
+                                        cVarDeclNode *varDecl = new cVarDeclNode($1, $3);
+                                        $3->SetDecl(varDecl);
+                                        $$ = varDecl;
+                                    }
 struct_decl:  STRUCT open decls close { g_insert = 1; } IDENTIFIER
                                 { 
                                     g_insert = 0;
@@ -158,13 +166,23 @@ array_decl:   ARRAY TYPE_ID '[' INT_VAL ']' { g_insert = 1; } IDENTIFIER
                                 }
 
 decl_after_id: ';'
-                                                                { $$ = new cVarDeclNode(g_declType, g_declName); }
+                                                                {
+                                                                    cVarDeclNode *varDecl = new cVarDeclNode(g_declType, g_declName);
+                                                                    g_declName->SetDecl(varDecl);
+                                                                    $$ = varDecl;
+                                                                }
                 |   '(' { g_symbolTable.IncreaseScope(); } paramsspec ')'
-                                                                { g_funcDecl = new cFuncDeclNode(g_declType, g_declName, $3); }
+                                                                {
+                                                                    g_funcDecl = new cFuncDeclNode(g_declType, g_declName, $3);
+                                                                    g_declName->SetDecl(g_funcDecl);
+                                                                }
                     func_tail
                                                                 { g_symbolTable.DecreaseScope(); $$ = g_funcDecl; g_funcDecl = nullptr; }
                 |   '(' { g_symbolTable.IncreaseScope(); } ')'
-                                                                { g_funcDecl = new cFuncDeclNode(g_declType, g_declName, nullptr); }
+                                                                {
+                                                                    g_funcDecl = new cFuncDeclNode(g_declType, g_declName, nullptr);
+                                                                    g_declName->SetDecl(g_funcDecl);
+                                                                }
                     func_tail
                                                                 { g_symbolTable.DecreaseScope(); $$ = g_funcDecl; g_funcDecl = nullptr; }
 
@@ -238,10 +256,33 @@ params:   params ',' param
 param:      expr
                                 { $$ = $1; }
 
-expr:       expr EQUALS addit
-                                { $$ = new cBinaryExprNode($1, new cOpNode(EQUALS), $3); }
-        |   addit
+expr:       expr OR andexpr
+                { $$ = new cBinaryExprNode($1, new cOpNode(OR), $3); }
+    |   andexpr
                                 { $$ = $1; }
+
+andexpr:    andexpr AND eqexpr
+                { $$ = new cBinaryExprNode($1, new cOpNode(AND), $3); }
+    |   eqexpr
+                { $$ = $1; }
+
+eqexpr:     eqexpr EQUALS relexpr
+                { $$ = new cBinaryExprNode($1, new cOpNode(EQUALS), $3); }
+    |   eqexpr NOT_EQUALS relexpr
+                { $$ = new cBinaryExprNode($1, new cOpNode(NOT_EQUALS), $3); }
+    |   relexpr
+                { $$ = $1; }
+
+relexpr:    relexpr '>' addit
+                { $$ = new cBinaryExprNode($1, new cOpNode('>'), $3); }
+    |   relexpr '<' addit
+                { $$ = new cBinaryExprNode($1, new cOpNode('<'), $3); }
+    |   relexpr GE addit
+                { $$ = new cBinaryExprNode($1, new cOpNode(GE), $3); }
+    |   relexpr LE addit
+                { $$ = new cBinaryExprNode($1, new cOpNode(LE), $3); }
+    |   addit
+                { $$ = $1; }
 
 addit:      addit '+' term
                                 { $$ = new cBinaryExprNode($1, new cOpNode('+'), $3); }
@@ -261,8 +302,12 @@ term:       term '*' fact
 
 fact:       '(' expr ')'
                                 { $$ = $2; }
+    |   '-' fact
+                { $$ = new cBinaryExprNode(new cIntExprNode(0), new cOpNode('-'), $2); }
         |   INT_VAL
                                 { $$ = new cIntExprNode($1); }
+    |   CHAR_VAL
+                { $$ = new cIntExprNode($1); }
         |   FLOAT_VAL
                                 { $$ = new cFloatExprNode($1); }
         |   varref

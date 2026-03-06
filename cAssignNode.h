@@ -18,8 +18,17 @@ class cAssignNode : public cStmtNode
         {
             AddChild(lval);
             AddChild(expr);
+            m_lval = lval;
+            m_expr = expr;
         }
 
         virtual string NodeType() { return string("assign"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+
+        cVarRefNode *GetLVal() { return m_lval; }
+        cExprNode *GetExpr() { return m_expr; }
+
+    private:
+        cVarRefNode *m_lval;
+        cExprNode *m_expr;
 };

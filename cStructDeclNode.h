@@ -27,6 +27,7 @@ class cStructDeclNode : public cDeclNode
         // Structs are types
         virtual bool IsType() { return true; }
         virtual bool IsStruct() { return true; }
+        virtual string GetName() { return m_name != nullptr ? m_name->GetName() : ""; }
         
         // Struct types return themselves as the type
         virtual cDeclNode *GetType() { return this; }

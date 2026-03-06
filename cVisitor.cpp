@@ -8,6 +8,13 @@
 #include "astnodes.h"
 
 //******************************************
+// VisitAllNodes: Start the traversal at the root
+void cVisitor::VisitAllNodes(cAstNode *node)
+{
+    node->Visit(this);
+}
+
+//******************************************
 // All AST node types need a Visit method. 
 // The code for each method is identical: simply visit all children
 void cVisitor::Visit(cAstNode *node)          { node->VisitAllChildren(this); }

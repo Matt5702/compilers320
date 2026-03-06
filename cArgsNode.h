@@ -25,4 +25,10 @@ class cArgsNode : public cAstNode
 
         virtual string NodeType() { return string("args"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+
+        int NumArgs() { return NumChildren(); }
+        cDeclNode *GetArg(int index)
+        {
+            return dynamic_cast<cDeclNode*>(GetChild(index));
+        }
 };

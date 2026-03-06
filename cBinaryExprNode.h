@@ -9,6 +9,7 @@
 
 #include "cExprNode.h"
 #include "cOpNode.h"
+#include "cSymbolTable.h"
 
 class cBinaryExprNode : public cExprNode
 {
@@ -27,14 +28,40 @@ class cBinaryExprNode : public cExprNode
         // Return the type of this expression (type of left operand for now)
         virtual cDeclNode *GetType()
         {
-            // Return the type of the left operand
-            cAstNode *left = GetChild(0);
-            if (left != nullptr)
+            cExprNode *leftExpr = dynamic_cast<cExprNode*>(GetChild(0));
+            cOpNode *opExpr = dynamic_cast<cOpNode*>(GetChild(1));
+            cExprNode *rightExpr = dynamic_cast<cExprNode*>(GetChild(2));
+
+            if (leftExpr == nullptr || rightExpr == nullptr || opExpr == nullptr)
+                return nullptr;
+
+            cDeclNode *leftType = leftExpr->GetType();
+            cDeclNode *rightType = rightExpr->GetType();
+            if (leftType == nullptr || rightType == nullptr)
+                return nullptr;
+
+            int op = opExpr->GetOp();
+            if (op == EQUALS || op == NOT_EQUALS || op == '>' || op == '<' ||
+                op == GE || op == LE || op == AND || op == OR)
             {
-                cExprNode *leftExpr = dynamic_cast<cExprNode*>(left);
-                if (leftExpr != nullptr)
-                    return leftExpr->GetType();
+                cSymbol *intSym = g_SymbolTable.Find("int");
+                if (intSym != nullptr && intSym->GetDecl() != nullptr)
+                    return intSym->GetDecl()->GetType();
+                return nullptr;
             }
-            return nullptr;
+
+            if ((leftType->IsInt() || leftType->IsFloat()) &&
+                (rightType->IsInt() || rightType->IsFloat()))
+            {
+                if (leftType->IsFloat() && rightType->IsFloat())
+                    return leftType->GetSize() >= rightType->GetSize() ? leftType : rightType;
+
+                if (leftType->IsFloat()) return leftType;
+                if (rightType->IsFloat()) return rightType;
+
+                return leftType->GetSize() >= rightType->GetSize() ? leftType : rightType;
+            }
+
+            return leftType;
         }
 };

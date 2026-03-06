@@ -19,7 +19,11 @@ class cFuncCallNode : public cExprNode
             AddChild(name);
             m_funcSymbol = name;
             if (params != nullptr)
+            {
                 AddChild(params);
+            }
+
+            m_params = params;
         }
 
         virtual string NodeType() { return string("funcCall"); }
@@ -33,7 +37,11 @@ class cFuncCallNode : public cExprNode
             
             return nullptr;
         }
+
+        cSymbol *GetSymbol() { return m_funcSymbol; }
+        cParamsNode *GetParams() { return m_params; }
         
     private:
         cSymbol *m_funcSymbol;  // The function being called
+        cParamsNode *m_params;  // The parameter list at call site
 };
