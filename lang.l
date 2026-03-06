@@ -15,6 +15,7 @@
 
 #include "cSymbol.h"
 #include "cSymbolTable.h"
+#include "cBaseTypeNode.h"
 #include "lex.h"
 #include "langparse.h"
 
@@ -124,6 +125,11 @@ static int ProcessID()
             sym = new cSymbol(name);
             g_symbolTable.Insert(sym);
         }
+        else
+        {
+            // Duplicate definition error
+            SemanticParseError("Symbol " + name + " already defined in current scope");
+        }
     }
     else
     {
@@ -133,11 +139,14 @@ static int ProcessID()
             sym = g_symbolTable.Find(name);
 
         if (sym == nullptr)
+        {
+            // Create a forward reference for undefined symbols (error will be caught in semantic analysis)
             sym = new cSymbol(name);
+        }
     }
     yylval.symbol = sym;
 
-    if (sym->IsType())
+    if (sym->GetDecl() != nullptr && sym->GetDecl()->IsType())
         return TYPE_ID;
     return IDENTIFIER;
 }
@@ -151,7 +160,17 @@ static int ProcessType()
     if (sym == nullptr)
     {
         sym = new cSymbol(name);
-        sym->SetIsType(true);
+        // Determine size and type characteristics based on name
+        int size = 4;
+        bool isFloat = false;
+        if (name == "char") size = 1;
+        else if (name == "int") size = 4;
+        else if (name == "float") { size = 4; isFloat = true; }
+        else if (name == "long") size = 8;
+        else if (name == "double") { size = 8; isFloat = true; }
+        
+        cBaseTypeNode *typeNode = new cBaseTypeNode(name, size, isFloat);
+        sym->SetDecl(typeNode);
         g_symbolTable.Insert(sym);
     }
 

@@ -18,6 +18,7 @@ class cArrayDeclNode : public cDeclNode
         {
             AddChild(type);
             AddChild(name);
+            m_type = type;
         }
 
         virtual string NodeType() { return string("array_decl"); }
@@ -26,7 +27,21 @@ class cArrayDeclNode : public cDeclNode
         {
             return " count=\"" + std::to_string(m_count) + "\"";
         }
+        
+        // Arrays are also types (can be used as type names)
+        virtual bool IsType() { return true; }
+        virtual bool IsArray() { return true; }
+        
+        // Return the element type of this array
+        virtual cDeclNode *GetType()
+        {
+            if (m_type != nullptr && m_type->GetDecl() != nullptr)
+                return m_type->GetDecl()->GetType();
+            
+            return nullptr;
+        }
 
     protected:
         int m_count;
+        cSymbol *m_type;    // The element type of this array
 };

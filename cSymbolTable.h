@@ -1,3 +1,4 @@
+#pragma once
 //****************************************************
 // Starter code for a symbol table definition.
 // You are not required to use any of these names, but you will need the 
@@ -18,6 +19,9 @@ class cSymbolTable
     public:
         // Construct an empty symbol table
         cSymbolTable();
+
+        // Initialize the root symbol table with built-in types
+        void InitRootTable();
 
         // Increase the scope: add a level to the nested symbol table
         // Return value is the newly created scope
@@ -49,3 +53,4 @@ class cSymbolTable
 
 // declare the global symbol table. The definition will have to be in a cpp file
 extern cSymbolTable g_symbolTable;
+extern cSymbolTable g_SymbolTable;  // Alias for compatibility

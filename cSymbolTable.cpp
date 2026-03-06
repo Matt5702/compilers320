@@ -3,6 +3,7 @@
 //
 #include <vector>
 #include "cSymbolTable.h"
+#include "cBaseTypeNode.h"
 
 using std::vector;
 
@@ -11,6 +12,7 @@ static vector<symbolTable_t*> g_scopes;
 
 // Global symbol table instance
 cSymbolTable g_symbolTable;
+cSymbolTable g_SymbolTable;  // Alias for compatibility
 
 // Lexer control globals
 int g_insert = 0;
@@ -23,6 +25,43 @@ cSymbolTable::cSymbolTable()
     if (g_scopes.empty())
     {
         g_scopes.push_back(new symbolTable_t());
+    }
+}
+
+// Initialize the root symbol table with built-in types
+void cSymbolTable::InitRootTable()
+{
+    // Preload built-in types to stabilize symbol IDs
+    // Format: name, size, isFloat
+    struct TypeInfo {
+        const char *name;
+        int size;
+        bool isFloat;
+    } types[] = {
+        {"char", 1, false},
+        {"int", 4, false},
+        {"float", 4, true},
+        {"long", 8, false},
+        {"double", 8, true}
+    };
+    
+    for (const auto &typeInfo : types)
+    {
+        cSymbol *sym = Find(typeInfo.name);
+        if (sym == nullptr)
+        {
+            // Create the base type node
+            cBaseTypeNode *typeNode = new cBaseTypeNode(
+                typeInfo.name, 
+                typeInfo.size, 
+                typeInfo.isFloat
+            );
+            
+            // Create the symbol and set its decl
+            sym = new cSymbol(typeInfo.name);
+            sym->SetDecl(typeNode);
+            Insert(sym);
+        }
     }
 }
 

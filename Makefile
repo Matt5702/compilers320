@@ -14,7 +14,10 @@ OBJS=main.o \
 	 langlex.o \
 	 langparse.o \
 	 cVisitor.o \
-	 cSymbolTable.o
+	 cSymbolTable.o \
+	 cSemantics.o \
+	 cComputeSize.o \
+	 cCodeGen.o
 
 all: lang
 

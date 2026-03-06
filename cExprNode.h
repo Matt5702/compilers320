@@ -13,8 +13,14 @@
 
 #include "cStmtNode.h"
 
+// Forward declaration
+class cDeclNode;
+
 class cExprNode : public cStmtNode
 {
     public:
         cExprNode() : cStmtNode() {}
+        
+        // Return the type of this expression
+        virtual cDeclNode *GetType() = 0;
 };

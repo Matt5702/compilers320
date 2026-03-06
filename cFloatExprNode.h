@@ -11,6 +11,7 @@
 #include <sstream>
 
 #include "cExprNode.h"
+#include "cSymbolTable.h"
 
 class cFloatExprNode : public cExprNode
 {
@@ -27,6 +28,17 @@ class cFloatExprNode : public cExprNode
 
         virtual string NodeType() { return string("float"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+        
+        // Return the type of this expression (float)
+        virtual cDeclNode *GetType()
+        {
+            cSymbol *typeSym = g_SymbolTable.Find("float");
+            
+            if (typeSym != nullptr && typeSym->GetDecl() != nullptr)
+                return typeSym->GetDecl()->GetType();
+            
+            return nullptr;
+        }
 
     protected:
         double m_value;

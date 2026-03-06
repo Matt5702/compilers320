@@ -11,6 +11,7 @@
 #include "lex.h"
 #include "astnodes.h"
 #include "cSymbolTable.h"
+#include "cBaseTypeNode.h"
 
 %}
 
@@ -44,6 +45,13 @@
     static cSymbol *g_declType = nullptr;
     static cSymbol *g_declName = nullptr;
     static cFuncDeclNode *g_funcDecl = nullptr;
+    static bool g_semanticErrorHappened = false;
+    
+    // Error checking macros
+    #define CHECK_ERROR() { if (g_semanticErrorHappened) \
+        { g_semanticErrorHappened = false; } }
+    #define PROP_ERROR() { if (g_semanticErrorHappened) \
+        { g_semanticErrorHappened = false; YYERROR; } }
 %}
 
 %start  program
@@ -135,9 +143,19 @@ decl:       TYPE_ID { g_insert = 1; } IDENTIFIER { g_insert = 0; g_declType = $1
 var_decl:   TYPE_ID { g_insert = 1; } IDENTIFIER
                                     { g_insert = 0; $$ = new cVarDeclNode($1, $3); }
 struct_decl:  STRUCT open decls close { g_insert = 1; } IDENTIFIER
-                                { g_insert = 0; $6->SetIsType(true); $$ = new cStructDeclNode($3, $6); }
+                                { 
+                                    g_insert = 0;
+                                    cStructDeclNode *structNode = new cStructDeclNode($3, $6);
+                                    $6->SetDecl(structNode);
+                                    $$ = structNode;
+                                }
 array_decl:   ARRAY TYPE_ID '[' INT_VAL ']' { g_insert = 1; } IDENTIFIER
-                                { g_insert = 0; $7->SetIsType(true); $$ = new cArrayDeclNode($2, $7, $4); }
+                                { 
+                                    g_insert = 0;
+                                    cArrayDeclNode *arrayNode = new cArrayDeclNode($2, $7, $4);
+                                    $7->SetDecl(arrayNode);
+                                    $$ = arrayNode;
+                                }
 
 decl_after_id: ';'
                                                                 { $$ = new cVarDeclNode(g_declType, g_declName); }
@@ -261,4 +279,13 @@ int yyerror(const char *msg)
         << yytext << " on line " << yylineno << "\n";
 
     return 0;
+}
+
+// Function that gets called when a semantic error happens
+void SemanticParseError(std::string error)
+{
+    std::cerr << "ERROR: " << error << " near line " 
+              << yylineno << "\n";
+    g_semanticErrorHappened = true;
+    yynerrs++;
 }

@@ -21,6 +21,7 @@ class cFuncDeclNode : public cDeclNode
         {
             AddChild(type);
             AddChild(name);
+            m_type = type;
             if (args != nullptr)
                 AddChild(args);
         }
@@ -45,4 +46,20 @@ class cFuncDeclNode : public cDeclNode
 
         virtual string NodeType() { return string("func"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+        
+        // Functions are funcs
+        virtual bool IsFunc() { return true; }
+        
+        // Return the return type of this function
+        virtual cDeclNode *GetType()
+        {
+            if (m_type != nullptr && m_type->GetDecl() != nullptr)
+                return m_type->GetDecl()->GetType();
+            
+            return nullptr;
+        }
+        
+    private:
+        cSymbol *m_type;    // The return type of this function
 };
+

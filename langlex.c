@@ -560,6 +560,7 @@ char *yytext;
 
 #include "cSymbol.h"
 #include "cSymbolTable.h"
+#include "cBaseTypeNode.h"
 #include "lex.h"
 #include "langparse.h"
 
@@ -579,11 +580,11 @@ int Return(int val);
 static int ProcessID();
 static int ProcessType();
 static std::string UnquoteString(const char *text);
-#line 582 "langlex.c"
+#line 583 "langlex.c"
 #define YY_NO_INPUT 1
-#line 45 "lang.l"
+#line 46 "lang.l"
     /* definitions go here. whitespace is an example. */
-#line 586 "langlex.c"
+#line 587 "langlex.c"
 
 #define INITIAL 0
 
@@ -798,11 +799,11 @@ YY_DECL
 		}
 
 	{
-#line 48 "lang.l"
+#line 49 "lang.l"
 
 
     /* Comments */
-#line 805 "langlex.c"
+#line 806 "langlex.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -872,244 +873,244 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 51 "lang.l"
+#line 52 "lang.l"
 { /* ignore C++ style comments */ }
 	YY_BREAK
 /* Keywords */
 case 2:
 YY_RULE_SETUP
-#line 54 "lang.l"
+#line 55 "lang.l"
 DO_RETURN(PROGRAM);
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 55 "lang.l"
+#line 56 "lang.l"
 DO_RETURN(IF);
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 56 "lang.l"
+#line 57 "lang.l"
 DO_RETURN(ELSE);
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 57 "lang.l"
+#line 58 "lang.l"
 DO_RETURN(ENDIF);
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 58 "lang.l"
+#line 59 "lang.l"
 DO_RETURN(WHILE);
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 59 "lang.l"
+#line 60 "lang.l"
 DO_RETURN(PRINT);
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 60 "lang.l"
+#line 61 "lang.l"
 return ProcessType();
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 61 "lang.l"
+#line 62 "lang.l"
 return ProcessType();
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 62 "lang.l"
+#line 63 "lang.l"
 return ProcessType();
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 63 "lang.l"
+#line 64 "lang.l"
 return ProcessType();
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 64 "lang.l"
+#line 65 "lang.l"
 return ProcessType();
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 65 "lang.l"
+#line 66 "lang.l"
 DO_RETURN(STRUCT);
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 66 "lang.l"
+#line 67 "lang.l"
 DO_RETURN(ARRAY);
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 67 "lang.l"
+#line 68 "lang.l"
 DO_RETURN(RETURN);
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 68 "lang.l"
+#line 69 "lang.l"
 DO_RETURN(PRINTS);
 	YY_BREAK
 /* Multi-character operators */
 case 17:
 YY_RULE_SETUP
-#line 71 "lang.l"
+#line 72 "lang.l"
 DO_RETURN(NOT_EQUALS);
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 72 "lang.l"
+#line 73 "lang.l"
 DO_RETURN(EQUALS);
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 73 "lang.l"
+#line 74 "lang.l"
 DO_RETURN(AND);
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 74 "lang.l"
+#line 75 "lang.l"
 DO_RETURN(OR);
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 75 "lang.l"
+#line 76 "lang.l"
 DO_RETURN(GE);
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 76 "lang.l"
+#line 77 "lang.l"
 DO_RETURN(LE);
 	YY_BREAK
 /* Literals */
 case 23:
 YY_RULE_SETUP
-#line 79 "lang.l"
+#line 80 "lang.l"
 { yylval.int_val = atoi(yytext); DO_RETURN(INT_VAL); }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 80 "lang.l"
+#line 81 "lang.l"
 { yylval.float_val = strtod(yytext, nullptr); DO_RETURN(FLOAT_VAL); }
 	YY_BREAK
 case 25:
 /* rule 25 can match eol */
 YY_RULE_SETUP
-#line 81 "lang.l"
+#line 82 "lang.l"
 { yylval.str_val = new std::string(UnquoteString(yytext)); DO_RETURN(STRING_LIT); }
 	YY_BREAK
 /* Single character tokens */
 case 26:
 YY_RULE_SETUP
-#line 84 "lang.l"
+#line 85 "lang.l"
 DO_RETURN('.');
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 85 "lang.l"
+#line 86 "lang.l"
 DO_RETURN('(');
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 86 "lang.l"
+#line 87 "lang.l"
 DO_RETURN(')');
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 87 "lang.l"
+#line 88 "lang.l"
 DO_RETURN('{');
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 88 "lang.l"
+#line 89 "lang.l"
 DO_RETURN('}');
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 89 "lang.l"
+#line 90 "lang.l"
 DO_RETURN('[');
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 90 "lang.l"
+#line 91 "lang.l"
 DO_RETURN(']');
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 91 "lang.l"
+#line 92 "lang.l"
 DO_RETURN(',');
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 92 "lang.l"
+#line 93 "lang.l"
 DO_RETURN(';');
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 93 "lang.l"
+#line 94 "lang.l"
 DO_RETURN('+');
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 94 "lang.l"
+#line 95 "lang.l"
 DO_RETURN('-');
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 95 "lang.l"
+#line 96 "lang.l"
 DO_RETURN('*');
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 96 "lang.l"
+#line 97 "lang.l"
 DO_RETURN('/');
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 97 "lang.l"
+#line 98 "lang.l"
 DO_RETURN('%');
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 98 "lang.l"
+#line 99 "lang.l"
 DO_RETURN('=');
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 99 "lang.l"
+#line 100 "lang.l"
 DO_RETURN('>');
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 100 "lang.l"
+#line 101 "lang.l"
 DO_RETURN('<');
 	YY_BREAK
 /* Identifiers - must come after keywords */
 case 43:
 YY_RULE_SETUP
-#line 103 "lang.l"
+#line 104 "lang.l"
 { return ProcessID(); }
 	YY_BREAK
 /* Whitespace */
 case 44:
 /* rule 44 can match eol */
 YY_RULE_SETUP
-#line 106 "lang.l"
+#line 107 "lang.l"
 { /* ignore */ }
 	YY_BREAK
 /* Catch-all */
 case 45:
 YY_RULE_SETUP
-#line 109 "lang.l"
+#line 110 "lang.l"
 DO_RETURN(JUNK_TOKEN);
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 111 "lang.l"
+#line 112 "lang.l"
 ECHO;
 	YY_BREAK
-#line 1112 "langlex.c"
+#line 1113 "langlex.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2085,7 +2086,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 111 "lang.l"
+#line 112 "lang.l"
 
 
 //******************************************************
@@ -2103,6 +2104,11 @@ static int ProcessID()
             sym = new cSymbol(name);
             g_symbolTable.Insert(sym);
         }
+        else
+        {
+            // Duplicate definition error
+            SemanticParseError("Symbol " + name + " already defined in current scope");
+        }
     }
     else
     {
@@ -2112,11 +2118,14 @@ static int ProcessID()
             sym = g_symbolTable.Find(name);
 
         if (sym == nullptr)
+        {
+            // Create a forward reference for undefined symbols (error will be caught in semantic analysis)
             sym = new cSymbol(name);
+        }
     }
     yylval.symbol = sym;
 
-    if (sym->IsType())
+    if (sym->GetDecl() != nullptr && sym->GetDecl()->IsType())
         return TYPE_ID;
     return IDENTIFIER;
 }
@@ -2130,7 +2139,17 @@ static int ProcessType()
     if (sym == nullptr)
     {
         sym = new cSymbol(name);
-        sym->SetIsType(true);
+        // Determine size and type characteristics based on name
+        int size = 4;
+        bool isFloat = false;
+        if (name == "char") size = 1;
+        else if (name == "int") size = 4;
+        else if (name == "float") { size = 4; isFloat = true; }
+        else if (name == "long") size = 8;
+        else if (name == "double") { size = 8; isFloat = true; }
+        
+        cBaseTypeNode *typeNode = new cBaseTypeNode(name, size, isFloat);
+        sym->SetDecl(typeNode);
         g_symbolTable.Insert(sym);
     }
 

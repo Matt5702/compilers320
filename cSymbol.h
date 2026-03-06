@@ -10,6 +10,9 @@ using std::string;
 
 #include "cAstNode.h"
 
+// Forward declaration to avoid circular dependency
+class cDeclNode;
+
 class cSymbol : public cAstNode
 {
     public:
@@ -18,7 +21,7 @@ class cSymbol : public cAstNode
         {
             m_id = ++nextId;
             m_name = name;
-            m_isType = false;
+            m_decl = nullptr;
         }
 
         // Return a string representation of a symbol
@@ -35,12 +38,14 @@ class cSymbol : public cAstNode
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 
         string GetName() const { return m_name; }
-        bool IsType() const { return m_isType; }
-        void SetIsType(bool isType) { m_isType = isType; }
+        
+        // Replace IsType() with GetDecl() pattern
+        cDeclNode *GetDecl() const { return m_decl; }
+        void SetDecl(cDeclNode *decl) { m_decl = decl; }
         
     protected:
         static long long nextId;    // keeps track of unique symbol IDs
         long long m_id;             // Unique ID for this symbol
         string m_name;              // Symbol name
-        bool m_isType;              // True when symbol is a type name
+        cDeclNode *m_decl;          // Pointer to declaration node
 };
