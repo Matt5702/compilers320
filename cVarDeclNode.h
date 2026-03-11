@@ -18,6 +18,7 @@ class cVarDeclNode : public cDeclNode
             AddChild(type);
             AddChild(name);
             m_type = type;
+            m_name = name;
         }
 
         virtual string NodeType() { return string("var_decl"); }
@@ -25,7 +26,7 @@ class cVarDeclNode : public cDeclNode
         
         // Variables are vars
         virtual bool IsVar() { return true; }
-        virtual string GetName() { return m_type != nullptr ? m_type->GetName() : ""; }
+        virtual string GetName() { return m_name != nullptr ? m_name->GetName() : ""; }
         
         // Return the type this variable declares
         virtual cDeclNode *GetType()
@@ -43,7 +44,10 @@ class cVarDeclNode : public cDeclNode
 
             return nullptr;
         }
+
+        cSymbol *GetSymbol() { return m_name; }
         
     private:
         cSymbol *m_type;    // The type of this variable
+        cSymbol *m_name;    // The variable name symbol
 };

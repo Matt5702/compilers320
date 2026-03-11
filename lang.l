@@ -127,8 +127,11 @@ static int ProcessID()
         }
         else
         {
-            // Duplicate definition error
-            SemanticParseError("Symbol " + name + " already defined in current scope");
+            cDeclNode *decl = sym->GetDecl();
+            if (decl == nullptr || !decl->IsFunc())
+            {
+                SemanticParseError("Symbol " + name + " already defined in current scope");
+            }
         }
     }
     else
@@ -165,7 +168,7 @@ static int ProcessType()
         bool isFloat = false;
         if (name == "char") size = 1;
         else if (name == "int") size = 4;
-        else if (name == "float") { size = 4; isFloat = true; }
+        else if (name == "float") { size = 8; isFloat = true; }
         else if (name == "long") size = 8;
         else if (name == "double") { size = 8; isFloat = true; }
         

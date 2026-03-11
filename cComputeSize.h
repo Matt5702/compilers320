@@ -9,6 +9,7 @@
 //
 
 #include "cVisitor.h"
+#include <vector>
 
 class cComputeSize : public cVisitor
 {
@@ -46,4 +47,17 @@ class cComputeSize : public cVisitor
         virtual void Visit(cStmtNode *node);
         virtual void Visit(cStmtsNode *node);
         virtual void Visit(cSymbol *node);
+
+    private:
+        static const int WORD_SIZE = 4;
+
+        int m_nextOffset = 0;
+        std::vector<int> m_scopeStart;
+        std::vector<int> m_scopeHigh;
+        bool m_protoArgs = false;
+
+        int AlignOffset(int offset, int size);
+        int AllocateLocal(int size);
+        int EnterScope();
+        int LeaveScope();
 };

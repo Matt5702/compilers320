@@ -18,6 +18,7 @@ class cStructDeclNode : public cDeclNode
         {
             AddChild(decls);
             AddChild(name);
+            m_decls = decls;
             m_name = name;
         }
 
@@ -31,7 +32,11 @@ class cStructDeclNode : public cDeclNode
         
         // Struct types return themselves as the type
         virtual cDeclNode *GetType() { return this; }
+
+        cDeclsNode *GetDecls() { return m_decls; }
+        cSymbol *GetSymbol() { return m_name; }
         
     private:
+        cDeclsNode *m_decls;
         cSymbol *m_name;    // The name of the struct
 };

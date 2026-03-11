@@ -40,9 +40,7 @@ void cSymbolTable::InitRootTable()
     } types[] = {
         {"char", 1, false},
         {"int", 4, false},
-        {"float", 4, true},
-        {"long", 8, false},
-        {"double", 8, true}
+        {"float", 8, true}
     };
     
     for (const auto &typeInfo : types)

@@ -16,6 +16,7 @@ class cArgsNode : public cAstNode
         cArgsNode(cDeclNode *decl) : cAstNode()
         {
             AddChild(decl);
+            m_size = 0;
         }
 
         void Insert(cDeclNode *decl)
@@ -31,4 +32,16 @@ class cArgsNode : public cAstNode
         {
             return dynamic_cast<cDeclNode*>(GetChild(index));
         }
+
+        int GetSize() { return m_size; }
+        void SetSize(int size) { m_size = size; }
+
+        virtual string AttributesToString()
+        {
+            if (m_size == 0) return string("");
+            return " size=\"" + std::to_string(m_size) + "\"";
+        }
+
+    private:
+        int m_size;
 };

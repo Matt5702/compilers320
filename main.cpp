@@ -29,6 +29,7 @@
 long long cSymbol::nextId;
 
 #define LAB5B
+#define LAB6
 
 int main(int argc, char **argv)
 {
@@ -75,7 +76,7 @@ int main(int argc, char **argv)
     g_SymbolTable.InitRootTable();
 
     result = yyparse();
-    if (yyast_root != nullptr && result==0)
+    if (yyast_root != nullptr)
     {
 #ifdef LAB5B
         cSemantics semantics;

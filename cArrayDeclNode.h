@@ -42,6 +42,16 @@ class cArrayDeclNode : public cDeclNode
             return nullptr;
         }
 
+        cDeclNode *GetElementDecl()
+        {
+            if (m_type != nullptr)
+                return m_type->GetDecl();
+
+            return nullptr;
+        }
+
+        int GetCount() { return m_count; }
+
     protected:
         int m_count;
         cSymbol *m_type;    // The element type of this array

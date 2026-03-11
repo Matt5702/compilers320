@@ -116,6 +116,14 @@ program: PROGRAM block
                                   else
                                       YYABORT;
                                 }
+    |   block
+                                { $$ = new cProgramNode($1);
+                                  yyast_root = $$;
+                                  if (yynerrs == 0)
+                                      YYACCEPT;
+                                  else
+                                      YYABORT;
+                                }
 block:  open decls stmts close
                                 { $$ = new cBlockNode($2, $3); }
     |   open stmts close
@@ -320,7 +328,7 @@ fact:       '(' expr ')'
 // Function to format error messages
 int yyerror(const char *msg)
 {
-    std::cerr << "ERROR: " << msg << " at symbol "
+    std::cout << "ERROR: " << msg << " at symbol "
         << yytext << " on line " << yylineno << "\n";
 
     return 0;
@@ -329,7 +337,7 @@ int yyerror(const char *msg)
 // Function that gets called when a semantic error happens
 void SemanticParseError(std::string error)
 {
-    std::cerr << "ERROR: " << error << " near line " 
+    std::cout << "ERROR: " << error << " near line " 
               << yylineno << "\n";
     g_semanticErrorHappened = true;
     yynerrs++;
