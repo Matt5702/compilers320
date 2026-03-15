@@ -24,13 +24,28 @@ class cBinaryExprNode : public cExprNode
 
         virtual string NodeType() { return string("expr"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+
+        cExprNode *GetLeft()
+        {
+            return dynamic_cast<cExprNode*>(GetChild(0));
+        }
+
+        cOpNode *GetOp()
+        {
+            return dynamic_cast<cOpNode*>(GetChild(1));
+        }
+
+        cExprNode *GetRight()
+        {
+            return dynamic_cast<cExprNode*>(GetChild(2));
+        }
         
         // Return the type of this expression (type of left operand for now)
         virtual cDeclNode *GetType()
         {
-            cExprNode *leftExpr = dynamic_cast<cExprNode*>(GetChild(0));
-            cOpNode *opExpr = dynamic_cast<cOpNode*>(GetChild(1));
-            cExprNode *rightExpr = dynamic_cast<cExprNode*>(GetChild(2));
+            cExprNode *leftExpr = GetLeft();
+            cOpNode *opExpr = GetOp();
+            cExprNode *rightExpr = GetRight();
 
             if (leftExpr == nullptr || rightExpr == nullptr || opExpr == nullptr)
                 return nullptr;

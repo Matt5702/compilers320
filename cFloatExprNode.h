@@ -28,6 +28,8 @@ class cFloatExprNode : public cExprNode
 
         virtual string NodeType() { return string("float"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+
+        double GetValue() { return m_value; }
         
         // Return the type of this expression (float)
         virtual cDeclNode *GetType()

@@ -18,6 +18,7 @@ OBJS=main.o \
 	 cDeclNode.o \
 	 cSemantics.o \
 	 cComputeSize.o \
+	 emit.o \
 	 cCodeGen.o
 
 all: lang
@@ -30,6 +31,10 @@ clean:
 	rm -f lang
 	rm -f out.xml
 	rm -f out2.xml
+	rm -f langout
+	rm -f langout.sl
+	rm -f langout.slb
+	rm -f langout.lst
 
 .cpp.o:
 	g++ $(COPTS) $? -o $@

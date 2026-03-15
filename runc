@@ -1,0 +1,34 @@
+#!/bin/bash
+TESTNAME="$1"
+
+if [ -f "$TESTNAME.lang" ]; then
+  LANGFILE="$TESTNAME.lang"
+  CORRECTFILE="$TESTNAME.correct"
+else
+  LANGFILE="test/$TESTNAME.lang"
+  CORRECTFILE="test/$TESTNAME.correct"
+fi
+
+./lang "$LANGFILE" langout
+RETVAL=$?
+if [ $RETVAL -ne 0 ] 
+then
+  echo $1 FAILED ------- && exit
+  [ $RETVAL -ne 0 ] && echo $1 FAILED ----- && exit
+fi
+
+slasm langout.sl io320.sl
+RETVAL=$?
+if [ $RETVAL -ne 0 ]
+then
+  echo $1 Assembly FAILED ---------
+  exit
+fi
+
+stackl langout > out
+
+diff -qbwB out "$CORRECTFILE"
+RETVAL=$?
+[ $RETVAL -eq 0 ] && echo $1 PASSED
+[ $RETVAL -ne 0 ] && echo $1 FAILED -----
+exit $RETVAL

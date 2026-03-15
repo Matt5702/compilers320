@@ -1,0 +1,26 @@
+// Matt Elfbrandt - test04: nested block scopes, shadowing, and preserving outer values.
+program
+{
+    int x;
+    char c;
+
+    x = 1;
+    c = 65;
+    print(x);
+
+    {
+        int x;
+        x = 2;
+        print(x);
+
+        {
+            char c;
+            c = 66;
+            print(c);
+        }
+
+        print(c);
+    }
+
+    print(x);
+}

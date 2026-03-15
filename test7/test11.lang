@@ -1,0 +1,14 @@
+// Matt Elfbrandt - test11: one-dimensional char arrays to catch byte-sized indexed loads and stores.
+program
+{
+    array char [4] bytes;
+    bytes b;
+
+    b[0] = 65;
+    b[1] = 66;
+    b[2] = b[0] + 2;
+
+    print(b[0]);
+    print(b[1]);
+    print(b[2]);
+}

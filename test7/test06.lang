@@ -1,0 +1,24 @@
+// Matt Elfbrandt - test06: while loops, loop-carried state, and multiple loop exits.
+program
+{
+    int x;
+    int sum;
+
+    x = 0;
+    sum = 0;
+
+    while (x < 5)
+    {
+        sum = sum + x;
+        x = x + 1;
+    }
+
+    print(sum);
+    print(x);
+
+    while (x > 2)
+    {
+        print(x);
+        x = x - 1;
+    }
+}

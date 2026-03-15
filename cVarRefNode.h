@@ -122,6 +122,8 @@ class cVarRefNode : public cExprNode
 
         void ClearRowSizes() { m_rowSizes.clear(); }
         void AddRowSize(int rowSize) { m_rowSizes.push_back(rowSize); }
+        int NumRowSizes() { return (int)m_rowSizes.size(); }
+        int GetRowSize(int index) { return m_rowSizes.at(index); }
 
         virtual string AttributesToString()
         {

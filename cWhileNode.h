@@ -21,4 +21,14 @@ class cWhileNode : public cStmtNode
 
         virtual string NodeType() { return string("while"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+
+        cExprNode *GetCond()
+        {
+            return dynamic_cast<cExprNode*>(GetChild(0));
+        }
+
+        cStmtNode *GetBody()
+        {
+            return dynamic_cast<cStmtNode*>(GetChild(1));
+        }
 };

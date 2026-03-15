@@ -28,4 +28,10 @@ class cStmtsNode : public cAstNode
 
         virtual string NodeType() { return string("stmts"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+
+        int NumStmts() { return NumChildren(); }
+        cStmtNode *GetStmt(int index)
+        {
+            return dynamic_cast<cStmtNode*>(GetChild(index));
+        }
 };

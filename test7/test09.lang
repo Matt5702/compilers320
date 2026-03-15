@@ -1,0 +1,16 @@
+// Matt Elfbrandt - test09: function prototype handling and recursive int return values.
+program
+{
+    int fact(int n);
+
+    int fact(int n)
+    {
+        if (n <= 1)
+            return 1;
+        endif;
+
+        return n * fact(n - 1);
+    }
+
+    print(fact(5));
+}

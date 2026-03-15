@@ -1,0 +1,8 @@
+// Matt Elfbrandt - test12: prints statements mixed with numeric print output.
+program
+{
+    prints("alpha");
+    prints("beta gamma");
+    print(123);
+    prints("done");
+}

@@ -1,0 +1,7 @@
+// Matt Elfbrandt - test01: basic integer literals, unary minus, and print.
+program
+{
+    print(0);
+    print(7);
+    print(-3);
+}

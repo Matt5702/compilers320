@@ -30,6 +30,8 @@ class cIntExprNode : public cExprNode
         }
         virtual string NodeType() { return string("int"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+
+        int GetValue() { return m_value; }
         
         // Return the type of this expression
         // Values 0..127 are char type, otherwise int

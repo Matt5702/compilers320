@@ -10,14 +10,13 @@
 
 #include "cVisitor.h"
 #include <string>
-#include <fstream>
 
 using std::string;
 
 class cCodeGen : public cVisitor
 {
     public:
-        cCodeGen(string filename) : m_filename(filename), m_output(filename) {}
+        cCodeGen(string filename) : m_filename(filename) {}
 
         // The VisitAllNodes method starts traversal at the root
         virtual void VisitAllNodes(cAstNode *node);
@@ -53,5 +52,16 @@ class cCodeGen : public cVisitor
 
     private:
         string m_filename;
-        std::ofstream m_output;
+        cFuncDeclNode *m_currentFunction = nullptr;
+
+        void EmitLine(const string &text);
+        void EmitPushInt(int value);
+        void EmitPushAddress(int offset);
+        void EmitLoadFromAddress(cDeclNode *type);
+        void EmitStoreToAddress(cDeclNode *type);
+        void EmitValueToBool();
+        void EmitCleanupAfterCall(int numParams, bool keepReturnValue);
+        void EmitVarAddress(cVarRefNode *node);
+        void EmitStringLiteral(const string &value);
+        string EscapeString(const string &value) const;
 };

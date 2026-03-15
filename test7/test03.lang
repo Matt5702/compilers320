@@ -1,0 +1,16 @@
+// Matt Elfbrandt - test03: int and char locals, assignment, reload, and byte-sized storage.
+program
+{
+    int x;
+    char c;
+
+    x = 12;
+    c = 65;
+    print(x);
+    print(c);
+
+    x = x + 3;
+    c = c + 1;
+    print(x);
+    print(c);
+}

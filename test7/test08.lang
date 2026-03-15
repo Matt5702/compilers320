@@ -1,0 +1,18 @@
+// Matt Elfbrandt - test08: zero-argument functions, multi-argument functions, nested calls, and discarded return values.
+program
+{
+    int stamp()
+    {
+        print(41);
+        return 0;
+    }
+
+    int add3(int a, int b, int c)
+    {
+        return a + b + c;
+    }
+
+    stamp();
+    print(add3(1, 2, 3));
+    print(add3(add3(1, 1, 1), 2, 3));
+}

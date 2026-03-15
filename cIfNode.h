@@ -27,4 +27,19 @@ class cIfNode : public cStmtNode
 
         virtual string NodeType() { return string("if"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+
+        cExprNode *GetCond()
+        {
+            return dynamic_cast<cExprNode*>(GetChild(0));
+        }
+
+        cStmtsNode *GetThenStmts()
+        {
+            return dynamic_cast<cStmtsNode*>(GetChild(1));
+        }
+
+        cStmtsNode *GetElseStmts()
+        {
+            return dynamic_cast<cStmtsNode*>(GetChild(2));
+        }
 };

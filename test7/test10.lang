@@ -1,0 +1,20 @@
+// Matt Elfbrandt - test10: one-dimensional int arrays, writes in a loop, and computed read indices.
+program
+{
+    array int [4] vec;
+    vec a;
+    int i;
+
+    i = 0;
+    while (i < 4)
+    {
+        a[i] = (i + 1) * 10;
+        i = i + 1;
+    }
+
+    print(a[0]);
+    print(a[1]);
+    print(a[2]);
+    print(a[3]);
+    print(a[1 + 2 - 1]);
+}

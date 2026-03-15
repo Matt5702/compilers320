@@ -30,6 +30,7 @@ long long cSymbol::nextId;
 
 #define LAB5B
 #define LAB6
+#define LAB7
 
 int main(int argc, char **argv)
 {
@@ -52,8 +53,14 @@ int main(int argc, char **argv)
     if (argc > 2)
     {
         outfile_name = argv[2];
-    } else {
+    }
+    else
+    {
+#ifdef LAB7
+        outfile_name = "langout";
+#else
         outfile_name = "/dev/tty";
+#endif
     }
 
 #ifndef LAB7

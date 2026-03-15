@@ -1,0 +1,42 @@
+// Matt Elfbrandt - test05: relational and equality operators through if/else branches.
+program
+{
+    int x;
+    x = 3;
+
+    if (x > 2)
+        print(1);
+    else
+        print(0);
+    endif;
+
+    if (x < 2)
+        print(0);
+    else
+        print(2);
+    endif;
+
+    if (x >= 3)
+        print(3);
+    else
+        print(0);
+    endif;
+
+    if (x <= 2)
+        print(0);
+    else
+        print(4);
+    endif;
+
+    if (x == 3)
+        print(5);
+    else
+        print(0);
+    endif;
+
+    if (x != 3)
+        print(0);
+    else
+        print(6);
+    endif;
+}

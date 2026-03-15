@@ -21,6 +21,8 @@ class cPrintsNode : public cStmtNode
             return " value=\"" + m_value + "\"";
         }
 
+        const std::string &GetString() const { return m_value; }
+
     protected:
         std::string m_value;
 };

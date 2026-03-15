@@ -1,0 +1,33 @@
+// Matt Elfbrandt - test07: logical AND/OR, short-circuit evaluation, and function side effects.
+program
+{
+    int noisy(int value)
+    {
+        print(value);
+        return value;
+    }
+
+    if (1 || noisy(99))
+        print(1);
+    else
+        print(0);
+    endif;
+
+    if (0 && noisy(88))
+        print(0);
+    else
+        print(2);
+    endif;
+
+    if (0 || noisy(7))
+        print(3);
+    else
+        print(0);
+    endif;
+
+    if (1 && noisy(8))
+        print(4);
+    else
+        print(0);
+    endif;
+}
